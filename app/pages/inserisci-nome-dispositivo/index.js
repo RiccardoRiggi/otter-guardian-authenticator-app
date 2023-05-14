@@ -3,30 +3,16 @@ import { Button } from '@rneui/base';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Stack, useRouter } from "expo-router";
-
-
 import { useState } from 'react';
-
 import * as React from "react";
 import { Header, Icon } from "@rneui/base";
-
 import * as SecureStore from 'expo-secure-store';
-
-
 import { Input } from '@rneui/themed';
-
 import { View } from 'react-native';
-
-
-
-
 
 const InserisciNomeDispositivoPage = () => {
 
     const router = useRouter()
-
-
-
 
     const [nomeDispositivo, setNomeDispositivo] = useState("");
     const [erroreNomeDispositivo, setErroreNomeDispositivo] = useState("");
@@ -37,28 +23,13 @@ const InserisciNomeDispositivoPage = () => {
     }
 
     const salvaNomeDispositivo = async () => {
-        if(nomeDispositivo!==""){
+        if (nomeDispositivo !== "") {
             await SecureStore.setItemAsync("nomeDispositivo", nomeDispositivo);
             router.push('/pages/scansiona-identificativo-dispositivo');
-        }else{
+        } else {
             setErroreNomeDispositivo("Il nome del dispositivo è richiesto");
         }
     }
-
-
-
-
-
-    const recuperaValore = async () => {
-        try {
-            const prova = await SecureStore.getItemAsync("prova");
-
-
-        } catch (error) {
-            // There was an error on the native side
-        }
-    }
-
 
     return (
         <SafeAreaProvider>

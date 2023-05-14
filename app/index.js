@@ -1,97 +1,14 @@
 import { Text } from '@rneui/themed';
 import { Button } from '@rneui/base';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
 import { Divider } from '@rneui/themed';
-
-import { View, StyleSheet } from 'react-native';
-
-
+import { View } from 'react-native';
 import { Stack, useRouter } from "expo-router";
-
-
-import { useState, useEffect, useRef } from 'react';
-
+import { useState, useEffect } from 'react';
 import * as React from "react";
 import { Header, Icon } from "@rneui/base";
-
 import * as SecureStore from 'expo-secure-store';
-
-import { ScrollView } from 'react-native';
-
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-
-
-
 import autenticazioneService from './services/autenticazioneService';
-import config from '../config';
-
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-    }),
-});
-
-// Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications
-async function sendPushNotification(expoPushToken) {
-
-    console.info(expoPushToken);
-
-    const message = {
-        to: expoPushToken,
-        sound: 'default',
-        title: 'Original Title',
-        body: 'And here is the body!',
-        data: { someData: 'goes here' },
-    };
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-    });
-}
-
-async function registerForPushNotificationsAsync() {
-    let token;
-
-    if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-        });
-    }
-
-    if (Device.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-        if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
-            return;
-        }
-        token = (await Notifications.getExpoPushTokenAsync({
-            projectId: config.idProgetto,
-        })).data;
-        console.log(token);
-    } else {
-        alert('Must use physical device for Push Notifications');
-    }
-
-    return token;
-}
 
 export function getData(date) {
     if (date != null) {
@@ -134,16 +51,6 @@ const Home = () => {
 
     const router = useRouter();
 
-    const [expoPushToken, setExpoPushToken] = useState('');
-    const [notification, setNotification] = useState(false);
-    const notificationListener = useRef();
-    const responseListener = useRef();
-
-
-
-    const [testo, setTesto] = useState("CLICCA PER SCOPRIRE COSA SUCCEDE A WALTER");
-
-    const [avviato, setAvviato] = React.useState(false);
 
     const [codice, setCodice] = useState("");
     const [oraCreazione, setOraCreazione] = useState("");
@@ -153,9 +60,14 @@ const Home = () => {
     const [idTipoLogin, setIdTipoLogin] = useState("");
 
     const avviaRicercaTentativiAppesi = async () => {
-        setAvviato(true);
+
+        verificaEsistenzaIdDispositivo();
 
         const idDispositivoFisico = await SecureStore.getItemAsync("idDispositivoFisico");
+
+        if (idDispositivoFisico === null) {
+            return;
+        }
 
 
         let jsonBody = {
@@ -188,15 +100,7 @@ const Home = () => {
 
 
         }).catch(e => {
-            //---------------------------------------------
-            try {
-                console.error(e.response.data);
-
-            } catch (e) {
-
-            }
-
-            //---------------------------------------------v
+            console.error(e);
         });
 
 
@@ -218,54 +122,20 @@ const Home = () => {
             setIdTipoLogin("");
 
         }).catch(e => {
-            //---------------------------------------------
-            try {
-                console.error(e);
-
-            } catch (e) {
-
-            }
-
-            //---------------------------------------------
-
+            console.error(e);
         });
     }
 
     const verificaEsistenzaIdDispositivo = async () => {
         const idDispositivo = await SecureStore.getItemAsync("idDispositivoFisico");
+
         if (idDispositivo === null) {
             router.push('/pages/inserisci-nome-dispositivo')
         }
-
-
-    }
-
-    const salvaToken = (token) => {
-        setExpoPushToken(token)
-    }
-
-    const gestioneNotifiche = () => {
-        registerForPushNotificationsAsync().then(token => salvaToken(token));
-
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-        });
-
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-        });
-
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
     }
 
     useEffect(() => {
         verificaEsistenzaIdDispositivo();
-
-
-
     }, [])
 
 
@@ -320,10 +190,7 @@ const Home = () => {
                 <Button color={"#5e72e4"} onPress={() => router.push('/pages/scansiona-identificativo-accesso')} title={"Scansiona QR Code"} />
                 <Divider width={10} color='#ffffff00' />
                 <Button color={"#5e72e4"} onPress={() => avviaRicercaTentativiAppesi()} title={"Richiedi codice di verifica"} />
-                <Divider width={10} color='#ffffff00' />
-                <Button color={"#5e72e4"} onPress={async () => {
-                    await sendPushNotification("");
-                }} title={"Abilita notifiche"} />
+
 
 
 

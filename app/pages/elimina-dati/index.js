@@ -3,18 +3,10 @@ import { Button } from '@rneui/base';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Stack, useRouter } from "expo-router";
-
-
-import { useState } from 'react';
-
 import * as React from "react";
 import { Header, Icon } from "@rneui/base";
 
 import * as SecureStore from 'expo-secure-store';
-
-
-import { Input } from '@rneui/themed';
-
 import { View } from 'react-native';
 
 
@@ -28,22 +20,10 @@ const EliminaDatiPage = () => {
     const eliminaDatiDalDispositivo = async () => {
         await SecureStore.deleteItemAsync("nomeDispositivo");
         await SecureStore.deleteItemAsync("idDispositivoFisico");
-        router.push('/');
+        router.push('/pages/inserisci-nome-dispositivo');
     }
 
 
-
-
-
-    const recuperaValore = async () => {
-        try {
-            const prova = await SecureStore.getItemAsync("prova");
-
-
-        } catch (error) {
-            // There was an error on the native side
-        }
-    }
 
 
     return (
@@ -92,7 +72,8 @@ const EliminaDatiPage = () => {
                 <Text
                     style={{
                         textAlign: 'justify',
-                        paddingBottom: 10
+                        paddingBottom: 10,
+                        fontSize: 20
                     }}
                 >
                     Proseguendo con l'eliminazione dei dati dal dispositivo non potrai più effettuare l'accesso tramite i metodi che richiedono la verifica del secondo fattore attraverso l'Authenticator. {"\n"}{"\n"}

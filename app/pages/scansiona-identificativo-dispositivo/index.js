@@ -30,17 +30,7 @@ const ScansionaIdentificativoDispositivo = () => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
-
-
-
     const [nomeDispositivo, setNomeDispositivo] = useState("");
-
-
-
-
-
-
-
 
 
     const recuperaNomeDispositivo = async () => {
@@ -48,9 +38,8 @@ const ScansionaIdentificativoDispositivo = () => {
             const nomeDispositivoTmp = await SecureStore.getItemAsync("nomeDispositivo");
             setNomeDispositivo(nomeDispositivoTmp);
 
-
         } catch (error) {
-            // There was an error on the native side
+            console.error(e);
         }
     }
 
@@ -73,19 +62,10 @@ const ScansionaIdentificativoDispositivo = () => {
             salvaIdDispositivo(data);
 
         }).catch(e => {
-            //---------------------------------------------
-            console.error("ERRORE");
+            console.error(e);
             setScanned(true);
-            //---------------------------------------------
         });
     };
-
-    /* if (hasPermission === null) {
-        // return <Text>Requesting for camera permission</Text>;
-     }
-     if (hasPermission === false) {
-       //  return <Text>No access to camera</Text>;
-     }*/
 
     const getBarCodeScannerPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -151,16 +131,10 @@ const ScansionaIdentificativoDispositivo = () => {
                     }
                 }
             >
-
-
-
-
-
                 {hasPermission && <BarCodeScanner
                     onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                     style={StyleSheet.absoluteFillObject}
                 />}
-                {scanned && <Button color={"#ff0000"} title={'Premi per riprovare'} onPress={() => setScanned(false)} />}
 
 
                 {!hasPermission && <Button

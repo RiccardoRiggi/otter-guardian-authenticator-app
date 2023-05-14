@@ -4,8 +4,8 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "otter-guardian-authenticator-app",
+    "slug": "otter-guardian-authenticator-app",
     "plugins": [
       [
         "expo-barcode-scanner",
@@ -13,6 +13,14 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ca13095f-8326-48e1-b72a-558eac9b9906"
+      }
+    },
+    "android": {
+      "package": "com.riccardoriggi.otterguardianauthenticatorapp"
+    }
   }
 }

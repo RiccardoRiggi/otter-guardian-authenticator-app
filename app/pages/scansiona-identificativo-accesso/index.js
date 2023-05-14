@@ -30,32 +30,6 @@ const ScansionaIdentificativoAccesso = () => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
-
-
-
-    const [nomeDispositivo, setNomeDispositivo] = useState("");
-
-
-
-
-
-
-
-
-
-    const recuperaNomeDispositivo = async () => {
-        try {
-            const nomeDispositivoTmp = await SecureStore.getItemAsync("nomeDispositivo");
-            setNomeDispositivo(nomeDispositivoTmp);
-
-
-        } catch (error) {
-            // There was an error on the native side
-        }
-    }
-
-
-
     const handleBarCodeScanned = async ({ type, data }) => {
 
         const idDispositivoFisico = await SecureStore.getItemAsync("idDispositivoFisico");
@@ -71,25 +45,10 @@ const ScansionaIdentificativoAccesso = () => {
             router.push('/')
 
         }).catch(e => {
-            //---------------------------------------------
-            try {
-                console.error(e);
-
-            } catch (e) {
-
-            }
-
-            //---------------------------------------------
+            console.error(e);
         });
 
     };
-
-    /* if (hasPermission === null) {
-        // return <Text>Requesting for camera permission</Text>;
-     }
-     if (hasPermission === false) {
-       //  return <Text>No access to camera</Text>;
-     }*/
 
     const getBarCodeScannerPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -97,7 +56,6 @@ const ScansionaIdentificativoAccesso = () => {
     };
 
     useEffect(() => {
-        recuperaNomeDispositivo();
 
 
 
@@ -156,10 +114,6 @@ const ScansionaIdentificativoAccesso = () => {
                     }
                 }
             >
-
-
-
-
 
                 {hasPermission && <BarCodeScanner
                     onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

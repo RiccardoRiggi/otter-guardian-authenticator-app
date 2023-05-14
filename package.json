@@ -29,7 +29,6 @@
     "react-native-screens": "~3.20.0",
     "react-native-web": "~0.18.7",
     "expo-barcode-scanner": "~12.3.2",
-    "expo-notifications": "~0.18.1",
     "expo-device": "~5.2.1"
   },
   "devDependencies": {
@@ -44,7 +43,7 @@
     "metro": "^0.73.7",
     "metro-resolver": "^0.73.7"
   },
-  "name": "my-app",
+  "name": "otter-guardian-authenticator-app",
   "version": "1.0.0",
   "private": true,
   "main": "index.js"
